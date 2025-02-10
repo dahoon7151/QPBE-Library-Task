@@ -27,6 +27,6 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookTag> bookTags = new HashSet<>();
 
-    @OneToOne(mappedBy = "loan")
+    @OneToOne(mappedBy = "book")
     private Loan loan;
 }
