@@ -1,6 +1,8 @@
 spring:
   application:
     name: qpbetask
+  profiles:
+    default: dev
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -18,3 +20,7 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+
+logging:
+  level:
+    root: INFO

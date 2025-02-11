@@ -18,5 +18,6 @@ public class Tag {
     private String name;
 
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
+
     private Set<BookTag> bookTags = new HashSet<>();
 }
