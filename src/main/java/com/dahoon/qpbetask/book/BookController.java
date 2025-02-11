@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Book CRUD")
 public class BookController {
     private final BookService bookService;
-    @PostMapping()
+    @PostMapping
     @Operation(summary = "도서 등록", description = "새로운 도서를 추가합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "도서가 등록되었습니다.", content = @Content(mediaType = "application/json")),
@@ -36,16 +37,17 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<?> showAllBook(
-            @RequestParam(name = "page", required = false, defaultValue = 0) int page,
+    public ResponseEntity<Page<BookDto>> showAllBook(
+            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "order", required = false, defaultValue = "title") String order) {
+        log.info("도서 조회 컨트롤러 - 페이지 : {}, 정렬기준 : {}", page, order);
 
-        return null;
+        return ResponseEntity.ok(bookService.showAllBook(page, order));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> showBook(@PathVariable(value = "id") Long bookId) {
 
-        return null;
+        return ResponseEntity;
     }
 }
