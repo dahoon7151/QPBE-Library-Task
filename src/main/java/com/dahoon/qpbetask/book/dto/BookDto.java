@@ -14,6 +14,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class BookDto {
+    private Long id;
+
     @NotBlank(message = "도서 제목을 입력하세요")
     private String title;
 
@@ -34,6 +36,7 @@ public class BookDto {
 
     public static BookDto toDto(Book book) {
         return BookDto.builder()
+                .id(book.getId())
                 .title(book.getTitle())
                 .author(book.getAuthor())
                 .publishedDate(book.getPublishedDate())
