@@ -37,17 +37,25 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<BookDto>> showAllBook(
+    public ResponseEntity<Page<BookDto>> showBookPage(
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(name = "order", required = false, defaultValue = "title") String order) {
-        log.info("도서 조회 컨트롤러 - 페이지 : {}, 정렬기준 : {}", page, order);
+            @RequestParam(name = "sort", required = false, defaultValue = "title") String sort) {
+        log.info("도서 조회 컨트롤러 - 페이지 : {}, 정렬기준 : {}", page, sort);
 
-        return ResponseEntity.ok(bookService.showAllBook(page, order));
+        return ResponseEntity.ok(bookService.showBookPage(page, sort));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> showBook(@PathVariable(value = "id") Long bookId) {
+    public ResponseEntity<BookDto> showBook(@PathVariable(value = "id") Long bookId) {
+        log.info("특정 도서 조회 컨트롤러");
 
-        return ResponseEntity;
+        return ResponseEntity.ok(bookService.showBook(bookId));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<BookDto> updateBook(@PathVariable(value = "id") Long bookId) {
+        log.info("도서 수정 컨트롤러");
+
+        return ResponseEntity.ok(null);
     }
 }

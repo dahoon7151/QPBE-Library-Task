@@ -1,6 +1,7 @@
 package com.dahoon.qpbetask.book;
 
 import com.dahoon.qpbetask.book.dto.BookDto;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,21 +26,28 @@ public class BookService {
     }
 
     @Transactional
-    public Page<BookDto> showAllBook(int page, String order) {
+    public Page<BookDto> showBookPage(int page, String sort) {
         List<Sort.Order> sorts = new ArrayList<>();
-        if (order.equals("title")) {
+        if (sort.equals("title")) {
             sorts.add(Sort.Order.asc("title"));
-        } else if (order.equals("date")) {
+        } else if (sort.equals("date")) {
             sorts.add(Sort.Order.asc("publishedDate"));
         } else {
             throw new IllegalArgumentException("잘못된 정렬 기준");
         }
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-        Page<Book> bookPage = bookRepository.findAl(pageable);
+        Page<Book> bookPage = bookRepository.findAll(pageable);
 
         if (bookPage.isEmpty()) {
             return Page.empty(pageable);
         }
         return bookPage.map(BookDto::toDto);
+    }
+
+    @Transactional
+    public BookDto showBook(Long id) {
+        return bookRepository.findById(id)
+                .map(BookDto::toDto)
+                .orElseThrow(() -> new EntityNotFoundException("해당 ID의 도서가 없습니다"));
     }
 }
