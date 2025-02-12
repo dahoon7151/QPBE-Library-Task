@@ -1,14 +1,16 @@
 package com.dahoon.qpbetask.book;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Builder
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +20,10 @@ public class Tag {
     private String name;
 
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
-
+    @Builder.Default
     private Set<BookTag> bookTags = new HashSet<>();
+
+    public Tag(String name) {
+        this.name = name;
+    }
 }
