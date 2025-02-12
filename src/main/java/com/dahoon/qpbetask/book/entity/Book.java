@@ -1,6 +1,6 @@
 package com.dahoon.qpbetask.book.entity;
 
-import com.dahoon.qpbetask.book.dto.BookDto;
+import com.dahoon.qpbetask.book.BookDto;
 import com.dahoon.qpbetask.loan.Loan;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,11 +22,13 @@ public class Book {
     @Column(name = "book_id")
     private Long id;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String author;
 
-    @Column(name = "published_date")
+    @Column(name = "published_date", nullable = false)
     private LocalDate publishedDate;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,4 +1,4 @@
-package com.dahoon.qpbetask.common;
+package com.dahoon.qpbetask.common.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

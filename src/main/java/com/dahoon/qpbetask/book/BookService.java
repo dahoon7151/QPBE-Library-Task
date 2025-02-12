@@ -1,6 +1,5 @@
 package com.dahoon.qpbetask.book;
 
-import com.dahoon.qpbetask.book.dto.BookDto;
 import com.dahoon.qpbetask.book.entity.Book;
 import com.dahoon.qpbetask.book.entity.Tag;
 import com.dahoon.qpbetask.book.repository.BookRepository;
