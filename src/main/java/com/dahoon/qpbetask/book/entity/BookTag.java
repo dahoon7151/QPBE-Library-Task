@@ -1,4 +1,4 @@
-package com.dahoon.qpbetask.book;
+package com.dahoon.qpbetask.book.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -1,6 +1,7 @@
 package com.dahoon.qpbetask.book;
 
 import com.dahoon.qpbetask.book.dto.BookDto;
+import com.dahoon.qpbetask.book.repository.BookRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -47,9 +47,9 @@ class BookControllerMockTest {
     void 도서등록() throws Exception {
         //Given
         BookDto bookDto = BookDto.builder()
-                .title("어린왕자")
-                .author("생텍쥐페리")
-                .publishedDate(LocalDate.of(2025, 2, 11))
+                .title("ABC")
+                .author("강다훈")
+                .publishedDate(LocalDate.now())
                 .build();
 
         given(bookService.addBook(any(BookDto.class))).willReturn(bookDto);
@@ -59,7 +59,7 @@ class BookControllerMockTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookDto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.title").value("어린왕자"));
+                .andExpect(jsonPath("$.title").value("ABC"));
     }
 
     @Test

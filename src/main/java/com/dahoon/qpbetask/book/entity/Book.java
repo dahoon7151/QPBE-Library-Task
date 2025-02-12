@@ -1,4 +1,4 @@
-package com.dahoon.qpbetask.book;
+package com.dahoon.qpbetask.book.entity;
 
 import com.dahoon.qpbetask.book.dto.BookDto;
 import com.dahoon.qpbetask.loan.Loan;
