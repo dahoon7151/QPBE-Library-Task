@@ -1,4 +1,4 @@
-package com.dahoon.qpbetask.book.dto;
+package com.dahoon.qpbetask.book;
 
 import com.dahoon.qpbetask.book.entity.Book;
 import jakarta.validation.constraints.NotBlank;

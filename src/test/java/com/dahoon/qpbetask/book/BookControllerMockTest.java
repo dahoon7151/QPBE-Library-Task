@@ -1,6 +1,5 @@
 package com.dahoon.qpbetask.book;
 
-import com.dahoon.qpbetask.book.dto.BookDto;
 import com.dahoon.qpbetask.book.repository.BookRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
