@@ -1,12 +1,14 @@
 package com.dahoon.qpbetask.book.dto;
 
-import com.dahoon.qpbetask.book.Book;
+import com.dahoon.qpbetask.book.entity.Book;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -26,6 +28,8 @@ public class BookDto {
     @PastOrPresent(message = "입력된 출판일이 미래의 날짜입니다.")
     private LocalDate publishedDate;
 
+    private Set<String> tagSet;
+
     public Book toEntity() {
         return Book.builder()
                 .title(title)
@@ -40,6 +44,9 @@ public class BookDto {
                 .title(book.getTitle())
                 .author(book.getAuthor())
                 .publishedDate(book.getPublishedDate())
+                .tagSet(book.getBookTags().stream()
+                        .map(bookTag -> bookTag.getTag().getName())
+                        .collect(Collectors.toSet()))
                 .build();
     }
 }

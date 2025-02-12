@@ -1,6 +1,6 @@
 package com.dahoon.qpbetask.loan;
 
-import com.dahoon.qpbetask.book.Book;
+import com.dahoon.qpbetask.book.entity.Book;
 import com.dahoon.qpbetask.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
