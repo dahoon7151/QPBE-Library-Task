@@ -1,5 +1,6 @@
-package com.dahoon.qpbetask.user;
+package com.dahoon.qpbetask.user.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ public class JwtTokenDto {
 
     private String accessToken;
 
+    @NotBlank
     private String refreshToken;
 
     public JwtTokenDto(String accessToken, String refreshToken) {

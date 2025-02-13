@@ -1,5 +1,6 @@
-package com.dahoon.qpbetask.user;
+package com.dahoon.qpbetask.user.component;
 
+import com.dahoon.qpbetask.user.dto.JwtTokenDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;

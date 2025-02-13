@@ -31,10 +31,6 @@ public class User {
     @Builder.Default
     private List<Loan> loans = new ArrayList<>();
 
-    public void encodePassword(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(this.password);
-    }
-
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }

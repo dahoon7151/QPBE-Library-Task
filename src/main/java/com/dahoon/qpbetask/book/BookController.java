@@ -88,7 +88,7 @@ public class BookController {
     public ResponseEntity<BookDto> updateBook(@RequestBody @Valid BookDto bookDto,
                                               @Parameter(description = "도서 ID", example = "1", in = ParameterIn.PATH)
                                               @PathVariable(value = "id")
-                                              @Min(0) @NotNull(message = "도서 ID를 입력하세요") Long bookId) {
+                                              @Min(1) @NotNull(message = "도서 ID를 입력하세요") Long bookId) {
         log.info("도서 수정 컨트롤러 title : {}", bookDto.getTitle());
 
         return ResponseEntity.ok(bookService.updateBook(bookDto, bookId));
@@ -104,7 +104,7 @@ public class BookController {
     public ResponseEntity<String> deleteBook(
             @Parameter(description = "도서 ID", example = "1", in = ParameterIn.PATH)
             @PathVariable(value = "id")
-            @Min(0) @NotNull(message = "도서 ID를 입력하세요") Long bookId) {
+            @Min(1) @NotNull(message = "도서 ID를 입력하세요") Long bookId) {
         log.info("도서 삭제 컨트롤러");
         bookService.deleteBook(bookId);
 
@@ -150,7 +150,7 @@ public class BookController {
     public ResponseEntity<BookDto> addBookTags(
             @Parameter(description = "도서 ID", example = "1", in = ParameterIn.PATH)
             @PathVariable(value = "id")
-            @Min(0) @NotNull(message = "도서 ID를 입력하세요") Long bookId,
+            @Min(1) @NotNull(message = "도서 ID를 입력하세요") Long bookId,
 
             @Parameter(description = "추가할 태그", example = "소설", in = ParameterIn.QUERY)
             @RequestParam(name = "tag") List<String> tags) {
