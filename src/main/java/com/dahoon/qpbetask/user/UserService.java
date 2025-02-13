@@ -7,7 +7,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +41,7 @@ public class UserService {
         User user = userRepository.findByUsername(userDto.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("등록되지 않은 사용자입니다."));
         if (!passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
-            throw new AuthorizationDeniedException("비밀번호가 틀렸습니다.");
+            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
         }
         log.info("서비스 - 올바른 로그인 정보");
 
@@ -55,7 +54,7 @@ public class UserService {
     @Transactional
     public JwtTokenDto refreshToken(JwtTokenDto jwtTokenDto) {
         if (!jwtTokenProvider.validateToken(jwtTokenDto.getRefreshToken())) {
-            throw new AuthorizationDeniedException("유효하지 않은 RefreshToken입니다.");
+            throw new IllegalArgumentException("유효하지 않은 RefreshToken입니다.");
         }
 
         User user = userRepository.findByRefreshToken(jwtTokenDto.getRefreshToken())
