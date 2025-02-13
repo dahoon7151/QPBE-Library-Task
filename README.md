@@ -1,31 +1,36 @@
-# QPBE-Library-Task
 
 # 📚 온라인 도서 관리 시스템
 
 이 프로젝트는 **온라인 도서 대출 및 관리 시스템**으로, **Spring Boot 기반의 REST API**를 제공합니다.  
-JWT 기반 인증 및 Swagger API 문서를 포함하며, 캐싱 및 CI/CD도 적용되었습니다.
+JWT 기반 인증, 도서 관리, 대출 기능을 포함하며, **Swagger API 문서, 캐싱, CI/CD, 모니터링**이 적용되었습니다.
 
 ---
 
 ## 🚀 주요 기능
 
-### ✅ **사용자 관리**
-- 회원가입 (`POST /api/users`)
-- 로그인 및 JWT 토큰 발급 (`POST /api/users/tokens`)
-- 사용자 목록 조회 (`GET /api/users`)
-- 로그아웃 (`DELETE /api/users/token`)
+### ✅ **사용자 관리 (User CRUD + JWT + Spring Security)**
+- **회원가입** (`POST /api/users`)
+- **로그인 및 JWT 토큰 발급** (`POST /api/users/token`)
+- **모든 사용자 조회** (`GET /api/users`)
+- **특정 사용자 조회** (`GET /api/users/{id}`)
+- **토큰 재발급 (Refresh Token 검증 후 Access Token 갱신)** (`POST /api/users/token/refresh`)
+- **로그아웃 (Refresh Token 제거)** (`DELETE /api/users/token`)
 
-### ✅ **도서 관리**
-- 도서 등록 (`POST /api/books`)
-- 도서 조회 (전체 목록, 개별 조회, 태그 기반 필터링) (`GET /api/books`)
-- 도서 삭제 (`DELETE /api/books/{id}`)
-- 도서 수정 (`PATCH /api/books/{id}`)
-- 도서 태그 추가 및 조회 (`POST /api/books/{id}/tag`, `GET /api/books/{id}/tag`)
+### ✅ **도서 관리 (Book CRUD)**
+- **도서 등록** (`POST /api/books`)
+- **도서 목록 조회 (페이지네이션, 정렬 포함)** (`GET /api/books`)
+- **특정 도서 조회** (`GET /api/books/{id}`)
+- **도서 삭제** (`DELETE /api/books/{id}`)
+- **도서 수정** (`PATCH /api/books/{id}`)
+- **도서 태그 추가** (`POST /api/books/{id}/tag`)
+- **태그별 도서 필터링** (`GET /api/books/tag`)
+- **도서 제목 검색** (`GET /api/books/title/{title}`)
+- **저자명으로 도서 검색** (`GET /api/books/author/{author}`)
 
-### ✅ **도서 대출 시스템**
-- 도서 대출 (`POST /api/loans`)
-- 도서 반납 (`PATCH /api/loans/{id}`)
-- 대출 여부 확인 (`GET /api/loans/{id}`)
+### ✅ **도서 대출 시스템 (Loan CRUD)**
+- **도서 대출** (`POST /api/loans`)
+- **도서 반납** (`PATCH /api/loans/{id}`)
+- **도서 대출 여부 확인** (`GET /api/loans/{id}`)
 
 ### ✅ **기타**
 - **Swagger API 문서 제공** (`/swagger-ui/index.html`)
@@ -145,7 +150,7 @@ docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATAB
 }
 ```
 
-✅ **로그인 예제 (`POST /api/users/tokens`)**
+✅ **로그인 예제 (`POST /api/users/token`)**
 ```json
 {
   "username": "testuser",
@@ -174,3 +179,5 @@ docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATAB
   "message": "반납되었습니다."
 }
 ```
+
+---
