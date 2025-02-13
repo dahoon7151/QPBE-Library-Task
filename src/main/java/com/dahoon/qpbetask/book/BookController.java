@@ -103,8 +103,7 @@ public class BookController {
     })
     public ResponseEntity<String> deleteBook(
             @Parameter(description = "도서 ID", example = "1", in = ParameterIn.PATH)
-            @PathVariable(value = "id")
-            @Min(1) @NotNull(message = "도서 ID를 입력하세요") Long bookId) {
+            @PathVariable(value = "id") @Min(1) Long bookId) {
         log.info("도서 삭제 컨트롤러");
         bookService.deleteBook(bookId);
 

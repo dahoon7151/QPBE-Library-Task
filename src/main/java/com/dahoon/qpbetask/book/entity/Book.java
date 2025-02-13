@@ -7,7 +7,9 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,8 +37,9 @@ public class Book {
     @Builder.Default
     private Set<BookTag> bookTags = new HashSet<>();
 
-    @OneToOne(mappedBy = "book")
-    private Loan loan;
+    @OneToMany(mappedBy = "book")
+    @Builder.Default
+    private List<Loan> loan = new ArrayList<>();
 
     public Book update(BookDto bookDto) {
         log.info("update title : {}", bookDto.getTitle());

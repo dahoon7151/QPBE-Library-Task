@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class BookDto {
     private Long id;
 
@@ -39,14 +38,12 @@ public class BookDto {
     }
 
     public static BookDto toDto(Book book) {
-        return BookDto.builder()
-                .id(book.getId())
-                .title(book.getTitle())
-                .author(book.getAuthor())
-                .publishedDate(book.getPublishedDate())
-                .tagSet(book.getBookTags().stream()
+        return new BookDto(book.getId(),
+                book.getTitle(),
+                book.getAuthor(),
+                book.getPublishedDate(),
+                book.getBookTags().stream()
                         .map(bookTag -> bookTag.getTag().getName())
-                        .collect(Collectors.toSet()))
-                .build();
+                        .collect(Collectors.toSet()));
     }
 }

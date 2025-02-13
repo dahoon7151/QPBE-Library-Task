@@ -17,8 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -124,5 +123,18 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.size()").value(2))
                 .andExpect(jsonPath("$[0].username").value("testuser"))
                 .andExpect(jsonPath("$[1].username").value("강다훈"));
+    }
+
+    @Test
+    void 비밀번호_특수문자없음_회원가입_실패() throws Exception {
+        // Given
+        UserDto invalidUser = new UserDto(null, "pwWrong", "Password123");
+        String jsonRequest = objectMapper.writeValueAsString(invalidUser);
+
+        // When & Then
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
+                .andExpect(status().isBadRequest());
     }
 }

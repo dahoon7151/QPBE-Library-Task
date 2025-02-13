@@ -6,6 +6,10 @@ import com.dahoon.qpbetask.book.entity.Tag;
 import com.dahoon.qpbetask.book.repository.BookRepository;
 import com.dahoon.qpbetask.book.repository.BookTagRepository;
 import com.dahoon.qpbetask.book.repository.TagRepository;
+import com.dahoon.qpbetask.user.User;
+import com.dahoon.qpbetask.user.UserRepository;
+import com.dahoon.qpbetask.user.component.JwtTokenProvider;
+import com.dahoon.qpbetask.user.dto.JwtTokenDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +45,10 @@ public class BookControllerTest {
     private BookTagRepository bookTagRepository;
     @Autowired
     private TagRepository tagRepository;
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private UserRepository userRepository;
 
     private static final Logger log = LoggerFactory.getLogger(BookControllerMockTest.class);
     private final ObjectMapper objectMapper = new ObjectMapper()
@@ -50,6 +58,8 @@ public class BookControllerTest {
     private Book savedBook2;
     private Tag tag1;
     private Tag tag2;
+    private User savedUser;
+    private JwtTokenDto jwtTokenDto;
 
     @BeforeEach
     void setUp() {
@@ -64,6 +74,13 @@ public class BookControllerTest {
                 .author("이채영")
                 .publishedDate(LocalDate.of(2024, 5, 3))
                 .build());
+
+        savedUser = userRepository.save(User.builder()
+                .username("강다훈")
+                .password("abc@123")
+                .build());
+
+        jwtTokenDto = jwtTokenProvider.generateToken(savedUser.getUsername());
     }
 
     @Test
