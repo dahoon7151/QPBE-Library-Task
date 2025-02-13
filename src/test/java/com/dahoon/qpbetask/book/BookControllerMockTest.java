@@ -45,11 +45,7 @@ class BookControllerMockTest {
     @Test
     void 도서등록() throws Exception {
         //Given
-        BookDto bookDto = BookDto.builder()
-                .title("ABC")
-                .author("강다훈")
-                .publishedDate(LocalDate.now())
-                .build();
+        BookDto bookDto = new BookDto(null, "ABC", "강다훈", LocalDate.now(), null);
 
         given(bookService.addBook(any(BookDto.class))).willReturn(bookDto);
 
@@ -65,11 +61,7 @@ class BookControllerMockTest {
     void 도서목록조회_출판일순페이지() throws Exception {
         // Given
         List<BookDto> bookList = List.of(
-                BookDto.builder()
-                        .title("ABC")
-                        .author("강다훈")
-                        .publishedDate(LocalDate.now())
-                        .build()
+                new BookDto(null, "ABC", "강다훈", LocalDate.now(), null)
         );
         Page<BookDto> bookPage = new PageImpl<>(bookList, PageRequest.of(0, 10), bookList.size());
 

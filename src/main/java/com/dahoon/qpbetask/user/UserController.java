@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +27,7 @@ import java.util.List;
 @Slf4j
 @Validated
 @RequestMapping("/api/users")
+@Tag(name = "User CRUD + JWT + Spring Security")
 public class UserController {
 
     private final UserService userService;
@@ -34,7 +36,10 @@ public class UserController {
     @Operation(summary = "사용자 등록", description = "사용자이름, 비밀번호를 입력받고 사용자를 등록")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "등록 성공", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "400", description = "이미 등록된 사용자 이름입니다.")
+            @ApiResponse(responseCode = "400", description = "이미 등록된 사용자 이름입니다."),
+            @ApiResponse(responseCode = "400", description = "잘못된 형식의 입력," +
+                    "사용자 이름은 공백일 수 없음" +
+                    "비밀번호는 8자 이상, 숫자 및 특수문자(@$!%*?&#) 포함, 영어,숫자,특수문자만 가능")
     })
     public ResponseEntity<UserDto> join(@RequestBody @Valid UserDto userDto) {
         log.info("사용자 등록 컨트롤러 - 사용자 이름 : {}", userDto.getUsername());
@@ -98,12 +103,11 @@ public class UserController {
     @Operation(summary = "특정 사용자 조회", description = "Id로 사용자 정보 조회 후 반환")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "404")
+            @ApiResponse(responseCode = "404", description = "해당 ID의 사용자가 없음")
     })
     public ResponseEntity<UserDto> showUser(
             @Parameter(description = "사용자 ID", example = "1", in = ParameterIn.PATH)
-            @PathVariable(value = "id")
-            @Min(1) @NotNull(message = "사용자 ID를 입력하세요") Long userId) {
+            @PathVariable(value = "id") @Min(1) Long userId) {
         log.info("특정 사용자 조회 컨트롤러 - ID : {}", userId);
 
         return ResponseEntity.ok(userService.showUser(userId));
