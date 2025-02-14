@@ -2,13 +2,18 @@ package com.dahoon.qpbetask.loan;
 
 import com.dahoon.qpbetask.book.entity.Book;
 import com.dahoon.qpbetask.book.repository.BookRepository;
+import com.dahoon.qpbetask.common.cache.CacheInvalidationPublisher;
 import com.dahoon.qpbetask.user.User;
 import com.dahoon.qpbetask.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDate;
 
@@ -20,8 +25,10 @@ public class LoanService {
     private final LoanRepository loanRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final CacheInvalidationPublisher cacheInvalidationPublisher;
 
     @Transactional
+    @CacheEvict(value = "loans", key = "#loanIds.bookId")
     public LoanDto loanBook(LoanDto loanIds) {
         Book book = bookRepository.findById(loanIds.getBookId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 도서가 없습니다."));
@@ -41,10 +48,20 @@ public class LoanService {
                 .loanDate(LocalDate.now())
                 .build();
 
-        return LoanDto.toDto(loan);
+        LoanDto savedLoanDto = LoanDto.toDto(loanRepository.save(loan));
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                log.info("Loan 캐싱 afterCommit");
+                cacheInvalidationPublisher.publishInvalidationMessage("loans::" + loanIds.getBookId());
+            }
+        });
+
+        return savedLoanDto;
     }
 
-    @Transactional
+    @Cacheable(value = "loans", key = "#id")
     public String checkLoan(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 도서가 존재하지 않습니다."));
@@ -58,11 +75,19 @@ public class LoanService {
     }
 
     @Transactional
+    @CacheEvict(value = "loans", key = "#id")
     public void returnBook(Long id) {
         Loan loan = loanRepository.findBorrowingLoanByBookId(id)
                 .orElseThrow(() -> new EntityNotFoundException("이미 반납된 도서입니다."));
         log.info("대출 정보 조회 성공");
 
         loanRepository.save(loan.returnBook());
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                cacheInvalidationPublisher.publishInvalidationMessage("loans::" + id);
+            }
+        });
     }
 }

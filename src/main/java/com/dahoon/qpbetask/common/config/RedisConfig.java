@@ -14,6 +14,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.*;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableCaching
@@ -28,17 +30,37 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisCacheConfiguration redisCacheConfiguration(ObjectMapper objectMapper) {
-        return RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10))
+    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper) {
+        RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(10)) // 기본 TTL 10분
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
                         new GenericJackson2JsonRedisSerializer(objectMapper)));
-    }
 
-    @Bean
-    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper) {
+        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
+
+        cacheConfigurations.put("books", RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(30))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                        new GenericJackson2JsonRedisSerializer(objectMapper))));
+
+        cacheConfigurations.put("book", RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(30))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                        new GenericJackson2JsonRedisSerializer(objectMapper))));
+
+        cacheConfigurations.put("booksByTag", RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(30))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                        new GenericJackson2JsonRedisSerializer(objectMapper))));
+
+        cacheConfigurations.put("refreshTokens", RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(5)) // RefreshToken TTL 5분
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                        new GenericJackson2JsonRedisSerializer(objectMapper))));
+
         return RedisCacheManager.builder(redisConnectionFactory)
-                .cacheDefaults(redisCacheConfiguration(objectMapper))
+                .cacheDefaults(defaultConfig)
+                .withInitialCacheConfigurations(cacheConfigurations)
                 .build();
     }
 
@@ -47,7 +69,6 @@ public class RedisConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
 
-        // Key & Value Serializer 설정
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
         template.setHashKeySerializer(new StringRedisSerializer());
