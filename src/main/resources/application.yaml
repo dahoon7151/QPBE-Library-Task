@@ -21,6 +21,14 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
 
+  cache:
+    type: redis
+
+  data:
+    redis:
+      port: 6379
+      host: localhost
+
 logging:
   level:
     root: INFO

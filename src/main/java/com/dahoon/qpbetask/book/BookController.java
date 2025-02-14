@@ -23,9 +23,9 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/books")
 @Slf4j
 @Validated
+@RequestMapping("/api/books")
 @Tag(name = "Book CRUD")
 public class BookController {
 
