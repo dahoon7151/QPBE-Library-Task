@@ -5,10 +5,10 @@ import com.dahoon.qpbetask.book.repository.BookRepository;
 import com.dahoon.qpbetask.user.User;
 import com.dahoon.qpbetask.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 

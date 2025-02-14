@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class BookDto {
     private Long id;
 
@@ -38,6 +40,7 @@ public class BookDto {
     }
 
     public static BookDto toDto(Book book) {
+        log.info("BookDto toDto 메소드");
         return new BookDto(book.getId(),
                 book.getTitle(),
                 book.getAuthor(),
