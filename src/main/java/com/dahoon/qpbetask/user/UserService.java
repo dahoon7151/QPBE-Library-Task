@@ -4,11 +4,11 @@ import com.dahoon.qpbetask.user.component.JwtTokenProvider;
 import com.dahoon.qpbetask.user.dto.JwtTokenDto;
 import com.dahoon.qpbetask.user.dto.UserDto;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
