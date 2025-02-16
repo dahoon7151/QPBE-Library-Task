@@ -34,7 +34,7 @@ jobs:
       - name: Wait for MySQL to be ready
         run: |
           for i in {1..30}; do
-            if docker exec test-mysql mysqladmin ping -h"localhost" --silent; then
+            if docker exec mysql mysqladmin ping -h"localhost" --silent; then
               echo "MySQL is ready!"
               exit 0
             fi
