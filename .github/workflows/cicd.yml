@@ -44,6 +44,9 @@ jobs:
           echo "MySQL did not start in time!"
           exit 1
 
+      - name: Check MySQL Database
+        run: docker exec mysql mysql -utestuser -ptestpass -e "SHOW DATABASES;"
+
       - name: Grant execute permission to Gradle
         run: chmod +x gradlew
 
