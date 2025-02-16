@@ -83,9 +83,9 @@ jobs:
 
       - name: Pull 이후 로컬 서버 배포   # AWS 배포 확장성 위해 도커 허브 이용
         run: |
-          docker-compose down
+          sudo docker-compose down
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/qpbe-app:latest
-          docker-compose up -d
+          sudo docker-compose up -d
 
       - name: 로컬 Health Check
         uses: jtalk/url-health-check-action@v3
