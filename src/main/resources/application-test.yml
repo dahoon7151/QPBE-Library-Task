@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/testdb
+    username: testuser
+    password: testpassword
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      repositories:
+        enabled: false
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+jwt:
+  secret: ${{ secrets.JWT_SECRET }}
