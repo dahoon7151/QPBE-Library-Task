@@ -28,8 +28,21 @@ jobs:
       - name: Set up Docker Compose
         run: docker-compose -f docker-compose.test.yml up -d
 
+      - name: Check Running Containers
+        run: docker ps -a
+
       - name: Wait for MySQL to be ready
-        run: sleep 20
+        run: |
+          for i in {1..30}; do
+            if docker exec test-mysql mysqladmin ping -h"localhost" --silent; then
+              echo "MySQL is ready!"
+              exit 0
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+          echo "MySQL did not start in time!"
+          exit 1
 
       - name: Grant execute permission to Gradle
         run: chmod +x gradlew
