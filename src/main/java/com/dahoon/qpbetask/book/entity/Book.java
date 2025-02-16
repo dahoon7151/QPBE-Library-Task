@@ -37,23 +37,30 @@ public class Book {
     @Builder.Default
     private Set<BookTag> bookTags = new HashSet<>();
 
-    @OneToMany(mappedBy = "book")
+    // 도서 삭제시 대출 기록을 따로 남기지 않음
+    // 남기려면 loan 객체에 책 정보를 저장하고 외래 키 ON DELETE SET NULL
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Loan> loan = new ArrayList<>();
 
     public Book update(BookDto bookDto) {
         log.info("update title : {}", bookDto.getTitle());
-        this.title = bookDto.getTitle();
-        this.author = bookDto.getAuthor();
-        this.publishedDate = bookDto.getPublishedDate();
-
+        if (bookDto.getTitle() != null) {
+            this.title = bookDto.getTitle();
+        }
+        if (bookDto.getAuthor() != null) {
+            this.author = bookDto.getAuthor();
+        }
+        if (bookDto.getPublishedDate() != null) {
+            this.publishedDate = bookDto.getPublishedDate();
+        }
         return this;
     }
 
     public BookTag addTag(Tag tag) {
         log.info("addTag - 태그명 : {}", tag.getName());
         BookTag bookTag = new BookTag(this, tag);
-        bookTags.add(bookTag);
+        this.bookTags.add(bookTag);
         tag.getBookTags().add(bookTag);
 
         return bookTag;

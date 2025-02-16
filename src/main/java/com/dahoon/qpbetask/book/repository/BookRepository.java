@@ -19,12 +19,18 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findByAuthorContaining(String author);
 
-    @Query("select b " +
-            "from Book b " +
+    @Query("SELECT b " +
+            "FROM Book b " +
             "JOIN b.bookTags bt " +
             "JOIN bt.tag t " +
-            "where t.name in :tagNames " +
-            "group by b " +
-            "having count(distinct t) = :tagCount ")
+            "WHERE t.name IN (:tagNames) " +
+            "GROUP BY b " +
+            "HAVING COUNT(DISTINCT t) = :tagCount")
     List<Book> findByTags(@Param("tagNames") List<String> tags, @Param("tagCount") int tagCount);
+
+    @Query("SELECT t.name " +
+            "FROM BookTag bt " +
+            "JOIN bt.tag t " +
+            "WHERE bt.book.id = :bookId")
+    List<String> findTagNamesByBookId(@Param("bookId") Long bookId);
 }

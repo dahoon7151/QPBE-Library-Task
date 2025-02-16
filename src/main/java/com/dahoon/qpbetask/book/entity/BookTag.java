@@ -1,7 +1,9 @@
 package com.dahoon.qpbetask.book.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,10 +18,12 @@ public class BookTag {
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
+    @JsonIgnore
     private Book book;
 
     @ManyToOne
     @JoinColumn(name = "tag_id", nullable = false)
+    @JsonIgnore
     private Tag tag;
 
     public BookTag(Book book, Tag tag) {
