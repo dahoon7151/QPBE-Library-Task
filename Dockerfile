@@ -3,8 +3,6 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY . .
+COPY build/libs/qpbetask-0.0.1-SNAPSHOT.jar app.jar
 
-RUN chmod +x gradlew
-
-CMD ["./gradlew", "test"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
