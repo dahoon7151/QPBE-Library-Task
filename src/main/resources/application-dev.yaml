@@ -5,7 +5,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/qpbe_dev?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/qpbe?serverTimezone=Asia/Seoul
     username: root
     password: dahoon@9912
 
@@ -26,10 +26,12 @@ spring:
     redis:
       port: 6379
       host: localhost
+      repositories:
+        enabled: false
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
 
 jwt:
   secret: 74160734b993c14263a0d4597c5913cb52de7f59b4f7aba341a831c3c1801dfc

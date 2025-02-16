@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Slf4j
 public class BookDto {
+
+    public interface OnUpdate {}
+
     private Long id;
 
     @NotBlank(message = "도서 제목을 입력하세요")
@@ -26,7 +29,7 @@ public class BookDto {
     private String author;
 
     @NotNull(message = "도서 출판일을 입력하세요")
-    @PastOrPresent(message = "입력된 출판일이 미래의 날짜입니다.")
+    @PastOrPresent(message = "입력된 출판일이 미래의 날짜입니다.", groups = OnUpdate.class)
     private LocalDate publishedDate;
 
     private Set<String> tagSet;

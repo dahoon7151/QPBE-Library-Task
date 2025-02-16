@@ -1,5 +1,7 @@
 package com.dahoon.qpbetask.common.config;
 
+import com.dahoon.qpbetask.book.BookDto;
+import com.dahoon.qpbetask.user.dto.UserDto;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -46,7 +48,12 @@ public class RedisConfig {
         cacheConfigurations.put("book", RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(30))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
-                        new GenericJackson2JsonRedisSerializer(objectMapper))));
+                        bookSerializer(objectMapper))));
+
+        cacheConfigurations.put("user", RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(10))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
+                        userSerializer(objectMapper))));
 
         cacheConfigurations.put("booksByTag", RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(30))
@@ -75,5 +82,13 @@ public class RedisConfig {
         template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
 
         return template;
+    }
+
+    private RedisSerializer<BookDto> bookSerializer(ObjectMapper objectMapper) {
+        return new Jackson2JsonRedisSerializer<>(objectMapper, BookDto.class);
+    }
+
+    private RedisSerializer<UserDto> userSerializer(ObjectMapper objectMapper) {
+        return new Jackson2JsonRedisSerializer<>(objectMapper, UserDto.class);
     }
 }

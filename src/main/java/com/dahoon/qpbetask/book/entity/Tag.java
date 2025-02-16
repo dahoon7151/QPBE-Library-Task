@@ -26,6 +26,8 @@ public class Tag {
 
     public Tag(String name) {
         this.name = name;
-        this.bookTags = new HashSet<>();
+        if (this.bookTags == null) {
+            this.bookTags = new HashSet<>();
+        }
     }
 }

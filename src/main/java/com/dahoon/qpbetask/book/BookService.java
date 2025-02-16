@@ -1,6 +1,7 @@
 package com.dahoon.qpbetask.book;
 
 import com.dahoon.qpbetask.book.entity.Book;
+import com.dahoon.qpbetask.book.entity.BookTag;
 import com.dahoon.qpbetask.book.entity.Tag;
 import com.dahoon.qpbetask.book.repository.BookRepository;
 import com.dahoon.qpbetask.book.repository.BookTagRepository;
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -36,6 +38,7 @@ public class BookService {
     private final TagRepository tagRepository;
     private final BookTagRepository bookTagRepository;
     private final CacheInvalidationPublisher cacheInvalidationPublisher;
+    private final CacheManager cacheManager;
 
     @Transactional
     @CacheEvict(value = "books", allEntries = true)
@@ -54,7 +57,7 @@ public class BookService {
     }
 
     @Cacheable(value = "books", key = "#page + '-' + #sort")
-    public Page<BookDto> showBookPage(int page, String sort) {
+    public List<BookDto> showBookPage(int page, String sort) {
         List<Sort.Order> sorts = new ArrayList<>();
         if (sort.equals("title")) {
             sorts.add(Sort.Order.asc("title"));
@@ -67,23 +70,25 @@ public class BookService {
         Page<Book> bookPage = bookRepository.findAll(pageable);
 
         if (bookPage.isEmpty()) {
-            return Page.empty(pageable);
+            return Collections.emptyList();
         }
-        return bookPage.map(BookDto::toDto);
+        return bookPage.getContent().stream()
+                .map(BookDto::toDto)
+                .toList();
     }
 
     @Cacheable(value = "book", key = "#id")
     public BookDto showBook(Long id) {
         log.info("서비스 - 특정 도서 조회");
-        return bookRepository.findById(id)
-                .map(BookDto::toDto)
+        Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 도서가 없습니다."));
+        return BookDto.toDto(book);
     }
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "book", key = "#id"), // 개별 도서 캐시 삭제
-            @CacheEvict(value = "books", allEntries = true) // 목록 캐시 삭제
+            @CacheEvict(value = "book", key = "#id"),
+            @CacheEvict(value = "books", allEntries = true)
     })
     public BookDto updateBook(BookDto bookDto, Long id) {
         Book book = bookRepository.findById(id)
@@ -104,12 +109,20 @@ public class BookService {
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "book", key = "#id"), // 개별 도서 캐시 삭제
-            @CacheEvict(value = "books", allEntries = true) // 목록 캐시 삭제
+            @CacheEvict(value = "book", key = "#id"),
+            @CacheEvict(value = "books", allEntries = true)
     })
     public void deleteBook(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 도서가 없습니다."));
+
+        List<String> tags = bookRepository.findTagNamesByBookId(id);
+        String sortedTagKey = getSortedTagsKey(tags);
+        if (!sortedTagKey.equals("empty")) {
+            cacheManager.getCache("booksByTag").evict(sortedTagKey);
+            log.info("태그 필터링 캐시 무효화");
+        }
+
         bookRepository.delete(book);
 
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
@@ -118,6 +131,11 @@ public class BookService {
                 log.info("캐시 afterCommit");
                 cacheInvalidationPublisher.publishInvalidationMessage("books");
                 cacheInvalidationPublisher.publishInvalidationMessage("book::" + id);
+
+                if (!sortedTagKey.equals("empty")) {
+                    cacheInvalidationPublisher.publishInvalidationMessage("booksByTag::" + sortedTagKey);
+                    log.info("도서 삭제 - 태그필터링 캐시 무효화 pub/sub");
+                }
             }
         });
     }
@@ -141,7 +159,8 @@ public class BookService {
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = "book", key = "#id"),
-            @CacheEvict(value = "books", allEntries = true)
+            @CacheEvict(value = "books", allEntries = true),
+            @CacheEvict(value = "booksByTag", key = "@bookService.getSortedTagsKey(#tags)")
     })
     public BookDto addTags(Long id, List<String> tags) {
         Book book = bookRepository.findById(id)
@@ -170,6 +189,7 @@ public class BookService {
                 String sortedTagKey = getSortedTagsKey(affectedTags);
                 if (!sortedTagKey.equals("empty")) {
                     cacheInvalidationPublisher.publishInvalidationMessage("booksByTag::" + sortedTagKey);
+                    log.info("태그 추가 캐시 무효화 pub sub");
                 }
             }
         });
@@ -179,7 +199,9 @@ public class BookService {
 
     @Cacheable(value = "booksByTag", key = "@bookService.getSortedTagsKey(#tags)")
     public List<BookDto> searchBooksByTags(List<String> tags) {
+        log.info("tag 개수 : {}", tags.size());
         List<Book> bookList = bookRepository.findByTags(tags, tags.size());
+        log.info("태그 필터링 - {}", bookList);
 
         return bookList.stream()
                 .map(BookDto::toDto)
@@ -188,12 +210,14 @@ public class BookService {
 
     // 캐시 저장용 태그 정렬
     public String getSortedTagsKey(List<String> tags) {
+        log.info("getSortedTagsKey");
         if (tags == null || tags.isEmpty()) {
             return "empty";
         }
 
         List<String> sortedTags = new ArrayList<>(tags);
         Collections.sort(sortedTags);
+        log.info("캐시 무효화 태그 키 - {}", sortedTags);
 
         try {
             return new ObjectMapper().writeValueAsString(sortedTags);

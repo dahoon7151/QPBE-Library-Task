@@ -35,8 +35,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
-//                        .anyRequest().permitAll()) // 성능 테스트용 필터 해제 (JWT 연관 API는 필터 적용)
-                        .anyRequest().authenticated())
+//                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .exceptionHandling(authenticationManager -> authenticationManager
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
