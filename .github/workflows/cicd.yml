@@ -44,6 +44,9 @@ jobs:
           echo "MySQL did not start in time!"
           exit 1
 
+      - name: Check MySQL Database as Root
+        run: docker exec mysql mysql -uroot -proot -e "SHOW DATABASES;"
+
       - name: Check MySQL Database  # MySQL 체크
         run: docker exec mysql mysql -u testuser -p testpass -e "SHOW DATABASES;"
 
