@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/testdb
-    username: testuser
-    password: testpassword
+    url: jdbc:mysql://localhost:3306/test
+    username: developer
+    password: dahoon@9912
 
   data:
     redis:
@@ -22,4 +22,4 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
 jwt:
-  secret: ${{ secrets.JWT_SECRET }}
+  secret: 74160734b993c14263a0d4597c5913cb52de7f59b4f7aba341a831c3c1801dfc
