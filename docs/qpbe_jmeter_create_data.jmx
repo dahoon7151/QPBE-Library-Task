@@ -154,7 +154,7 @@
         </HTTPSamplerProxy>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="캐시 적용 이후 ">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="캐싱 이전이후 검증">
         <intProp name="ThreadGroup.num_threads">100</intProp>
         <intProp name="ThreadGroup.ramp_time">5</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
