@@ -50,7 +50,7 @@ public class BookControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    private static final Logger log = LoggerFactory.getLogger(BookControllerMockTest.class);
+    private static final Logger log = LoggerFactory.getLogger(BookControllerTest.class);
     private final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule());
 
