@@ -1,6 +1,7 @@
 package com.dahoon.qpbetask.book;
 
 import com.dahoon.qpbetask.book.entity.Book;
+import com.dahoon.qpbetask.book.entity.BookTag;
 import com.dahoon.qpbetask.book.entity.Tag;
 import com.dahoon.qpbetask.book.repository.BookRepository;
 import com.dahoon.qpbetask.book.repository.BookTagRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -33,7 +35,7 @@ public class BookService {
     }
 
     @Transactional
-    public Page<BookDto> showBookPage(int page, String sort) {
+    public List<BookDto> showBookPage(int page, String sort) {
         List<Sort.Order> sorts = new ArrayList<>();
         if (sort.equals("title")) {
             sorts.add(Sort.Order.asc("title"));
@@ -46,16 +48,19 @@ public class BookService {
         Page<Book> bookPage = bookRepository.findAll(pageable);
 
         if (bookPage.isEmpty()) {
-            return Page.empty(pageable);
+            return Collections.emptyList();
         }
-        return bookPage.map(BookDto::toDto);
+        return bookPage.getContent().stream()
+                .map(BookDto::toDto)
+                .toList();
     }
 
     @Transactional
     public BookDto showBook(Long id) {
-        return bookRepository.findById(id)
-                .map(BookDto::toDto)
+        log.info("서비스 - 특정 도서 조회");
+        Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 ID의 도서가 없습니다."));
+        return BookDto.toDto(book);
     }
 
     @Transactional
@@ -108,7 +113,9 @@ public class BookService {
 
     @Transactional
     public List<BookDto> searchBooksByTags(List<String> tags) {
+        log.info("tag 개수 : {}", tags.size());
         List<Book> bookList = bookRepository.findByTags(tags, tags.size());
+        log.info("태그 필터링 - {}", bookList);
 
         return bookList.stream()
                 .map(BookDto::toDto)

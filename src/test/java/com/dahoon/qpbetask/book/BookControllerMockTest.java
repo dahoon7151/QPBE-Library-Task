@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -35,7 +35,7 @@ class BookControllerMockTest {
     private MockMvc mockMvc;
     @Autowired
     private BookRepository bookRepository;
-    @MockitoBean
+    @MockBean
     private BookService bookService;
 
     private static final Logger log = LoggerFactory.getLogger(BookControllerMockTest.class);
@@ -63,9 +63,8 @@ class BookControllerMockTest {
         List<BookDto> bookList = List.of(
                 new BookDto(null, "ABC", "강다훈", LocalDate.now(), null)
         );
-        Page<BookDto> bookPage = new PageImpl<>(bookList, PageRequest.of(0, 10), bookList.size());
 
-        given(bookService.showBookPage(anyInt(), anyString())).willReturn(bookPage);
+        given(bookService.showBookPage(anyInt(), anyString())).willReturn(bookList);
 
         // When, Then
         mockMvc.perform(get("/api/books")
@@ -73,10 +72,8 @@ class BookControllerMockTest {
                         .param("sort", "date")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray()) // ✅ 응답이 배열인지 검증
-                .andExpect(jsonPath("$.content.length()").value(1))
-                .andExpect(jsonPath("$.content[0].title").value("ABC"))
-                .andExpect(jsonPath("$.totalElements").value(1))
-                .andExpect(jsonPath("$.totalPages").value(1));
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].title").value("ABC"));
     }
 }

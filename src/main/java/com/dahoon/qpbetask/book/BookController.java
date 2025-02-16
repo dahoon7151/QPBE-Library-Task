@@ -23,9 +23,9 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/books")
 @Slf4j
 @Validated
+@RequestMapping("/api/books")
 @Tag(name = "Book CRUD")
 public class BookController {
 
@@ -52,7 +52,7 @@ public class BookController {
             @ApiResponse(responseCode = "200", description = "조회 성공, 없다면 빈 페이지 반환", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "잘못된 정렬기준")
     })
-    public ResponseEntity<Page<BookDto>> showBookPage(
+    public ResponseEntity<List<BookDto>> showBookPage(
             @Parameter(description = "페이지 번호", example = "1", in = ParameterIn.QUERY)
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
 
@@ -85,7 +85,7 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "해당 ID의 도서가 없음"),
             @ApiResponse(responseCode = "400", description = "잘못된 데이터 입력")
     })
-    public ResponseEntity<BookDto> updateBook(@RequestBody @Valid BookDto bookDto,
+    public ResponseEntity<BookDto> updateBook(@RequestBody @Validated(BookDto.OnUpdate.class) BookDto bookDto,
                                               @Parameter(description = "도서 ID", example = "1", in = ParameterIn.PATH)
                                               @PathVariable(value = "id")
                                               @Min(1) @NotNull(message = "도서 ID를 입력하세요") Long bookId) {

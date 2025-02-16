@@ -4,11 +4,11 @@ import com.dahoon.qpbetask.user.component.JwtTokenProvider;
 import com.dahoon.qpbetask.user.dto.JwtTokenDto;
 import com.dahoon.qpbetask.user.dto.UserDto;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -53,16 +53,13 @@ public class UserService {
 
     @Transactional
     public JwtTokenDto refreshToken(JwtTokenDto jwtTokenDto) {
-        if (!jwtTokenProvider.validateToken(jwtTokenDto.getRefreshToken())) {
-            throw new IllegalArgumentException("유효하지 않은 RefreshToken입니다.");
-        }
-
         User user = userRepository.findByRefreshToken(jwtTokenDto.getRefreshToken())
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 토큰을 가진 사용자가 없습니다."));
+
         String username = user.getUsername();
         log.info("서비스 - 재발급 사용자 이름 : {}", username);
 
-        JwtTokenDto newTokenDto = jwtTokenProvider.generateToken(user.getUsername());
+        JwtTokenDto newTokenDto = jwtTokenProvider.generateToken(username);
         user.updateRefreshToken(newTokenDto.getRefreshToken());
 
         return newTokenDto;

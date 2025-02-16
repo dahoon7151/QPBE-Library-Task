@@ -90,6 +90,7 @@ public class BookControllerTest {
 
         // When & Then
         mockMvc.perform(get("/api/books/" + bookId)
+                        .header("Authorization", "Bearer " + jwtTokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -106,6 +107,7 @@ public class BookControllerTest {
 
         //When, Then
         mockMvc.perform(patch("/api/books/" + savedBook1.getId())
+                        .header("Authorization", "Bearer " + jwtTokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedBookDto)))
                 .andExpect(status().isOk())
@@ -123,7 +125,8 @@ public class BookControllerTest {
         Long bookId = savedBook1.getId();
 
         // When & Then
-        mockMvc.perform(delete("/api/books/" + bookId))
+        mockMvc.perform(delete("/api/books/" + bookId)
+                        .header("Authorization", "Bearer " + jwtTokenDto.getAccessToken()))
                 .andExpect(status().isNoContent());
 
         boolean isBookPresent = bookRepository.findById(bookId).isPresent();
@@ -137,6 +140,7 @@ public class BookControllerTest {
 
         // When & Then
         mockMvc.perform(get("/api/books/title/" + keyword)
+                        .header("Authorization", "Bearer " + jwtTokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
@@ -153,12 +157,14 @@ public class BookControllerTest {
         // When & Then
         mockMvc.perform(post("/api/books/" + bookId + "/tag")
                         .param("tag", tags.toArray(new String[0]))
+                        .header("Authorization", "Bearer " + jwtTokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.tagSet.length()").value(2));
 
         mockMvc.perform(post("/api/books/" + bookId + "/tag")
                         .param("tag", tags.toArray(new String[0]))
+                        .header("Authorization", "Bearer " + jwtTokenDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.tagSet.length()").value(2));
@@ -177,6 +183,7 @@ public class BookControllerTest {
 
         // When & Then
         mockMvc.perform(get("/api/books/tag")
+                        .header("Authorization", "Bearer " + jwtTokenDto.getAccessToken())
                         .param("tag", tags.toArray(new String[0]))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

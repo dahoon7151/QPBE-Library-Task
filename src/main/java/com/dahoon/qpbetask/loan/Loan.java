@@ -2,6 +2,7 @@ package com.dahoon.qpbetask.loan;
 
 import com.dahoon.qpbetask.book.entity.Book;
 import com.dahoon.qpbetask.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,10 +28,12 @@ public class Loan {
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
+    @JsonIgnore
     private Book book;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     public Loan returnBook() {

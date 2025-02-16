@@ -3,6 +3,35 @@ spring:
     activate:
       on-profile: prod
 
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://prod-db-host:3306/qpbe_prod?serverTimezone=Asia/Seoul
+    username: prod_user
+    password: prod_secure_password
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+        default_batch_fetch_size: 100
+
+  cache:
+    type: none
+
+  data:
+    redis:
+      port: 6379
+      host: prod-redis-host
+      repositories:
+        enabled: false
+
 logging:
   level:
     root: WARN
+
+jwt:
+  secret: prod_jwt_secret

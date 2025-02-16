@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -14,7 +15,11 @@ import java.util.stream.Collectors;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class BookDto {
+
+    public interface OnUpdate {}
+
     private Long id;
 
     @NotBlank(message = "도서 제목을 입력하세요")
@@ -24,7 +29,7 @@ public class BookDto {
     private String author;
 
     @NotNull(message = "도서 출판일을 입력하세요")
-    @PastOrPresent(message = "입력된 출판일이 미래의 날짜입니다.")
+    @PastOrPresent(message = "입력된 출판일이 미래의 날짜입니다.", groups = OnUpdate.class)
     private LocalDate publishedDate;
 
     private Set<String> tagSet;
@@ -38,6 +43,7 @@ public class BookDto {
     }
 
     public static BookDto toDto(Book book) {
+        log.info("BookDto toDto 메소드");
         return new BookDto(book.getId(),
                 book.getTitle(),
                 book.getAuthor(),
