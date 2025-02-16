@@ -25,8 +25,11 @@ jobs:
       - name: Install Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
 
-      - name: Stop and Remove MySQL Container
-        run: docker-compose -f docker-compose.test.yml down -v && docker-compose -f docker-compose.test.yml up -d
+      - name: Grant execute permission to Gradle
+        run: chmod +x gradlew
+
+      - name: Build JAR file
+        run: ./gradlew build -x test
 
       - name: Set up Docker Compose
         run: docker-compose -f docker-compose.test.yml up -d
@@ -47,22 +50,14 @@ jobs:
           echo "MySQL did not start in time!"
           exit 1
 
-      - name: Check MySQL Database as Root
-        run: docker exec mysql mysql -uroot -proot -e "SHOW DATABASES;"
+      - name: Run Tests in Docker
+        run: docker exec spring-app ./gradlew test
 
-      - name: Check MySQL Database  # MySQL 체크
-        run: docker exec mysql mysql -u testuser -p testpass -e "SHOW DATABASES;"
-
-      - name: Grant execute permission to Gradle
-        run: chmod +x gradlew
-
-      - name: Build and Test
-        run: ./gradlew build test
-        env:
-          SPRING_PROFILE_ACTIVE: test
-
-      - name: Upload Build Artifact
+      - name: Upload Test Reports
         uses: actions/upload-artifact@v4
         with:
-          name: application-jar
-          path: build/libs/*.jar
+          name: test-reports
+          path: build/reports/tests/test
+
+      - name: Stop and Remove Containers
+        run: docker-compose -f docker-compose.test.yml down
