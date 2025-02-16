@@ -84,6 +84,43 @@ public class BookControllerTest {
     }
 
     @Test
+    void 도서등록() throws Exception {
+        // Given
+        BookDto bookDto = new BookDto(null, "abcd", "강다훈", LocalDate.now(), null);
+
+        // When, Then
+        mockMvc.perform(post("/api/books")
+                        .header("Authorization", "Bearer " + jwtTokenDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookDto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.title").value("abcd"));
+    }
+
+    @Test
+    void 도서목록조회_출판일순페이지() throws Exception {
+        // Given
+        Book book = Book.builder()
+                .title("abcd")
+                .author("강다훈")
+                .publishedDate(LocalDate.now())
+                .build();
+
+        bookRepository.save(book);
+
+        // When, Then
+        mockMvc.perform(get("/api/books")
+                        .header("Authorization", "Bearer " + jwtTokenDto.getAccessToken())
+                        .param("page", "0")
+                        .param("sort", "date")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0].title").value("AEF"));
+    }
+
+    @Test
     void 도서조회_MySQL에서생성한Id() throws Exception {
         // Given
         Long bookId = savedBook1.getId();
