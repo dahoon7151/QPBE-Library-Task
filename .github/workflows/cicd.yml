@@ -67,7 +67,7 @@ jobs:
           files: |
             **/build/test-results/**/*.xml
 
-      - name: Create .env file from GitHub Secrets
+      - name: .env 생성
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
         shell: bash
@@ -86,18 +86,21 @@ jobs:
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/qpbe-app:latest .
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/qpbe-app:latest
 
-      - name: Pull 이후 로컬 서버 배포   # AWS 배포 확장성 위해 도커 허브 이용
-        run: |
-          docker compose down
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/qpbe-app:latest
-          docker compose up -d
-
-      - name: Check Application Logs
-        run: docker logs spring_app || true
+      - name: Pull 이후 로컬 서버 배포
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /home/${{ secrets.SERVER_USER }}/deploy
+            docker-compose down
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/qpbe-app:latest
+            docker-compose up -d
 
       - name: 로컬 Health Check
         uses: jtalk/url-health-check-action@v3
         with:
-          url: http://localhost:8080/actuator/health
+          url: http://host.docker.internal:8080/actuator/health
           max-attempts: 3
           retry-delay: 1s
