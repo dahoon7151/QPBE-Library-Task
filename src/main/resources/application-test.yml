@@ -1,14 +1,14 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/test
+    url: jdbc:mysql://localhost:3306/test
     username: developer
     password: dahoon@9912
 
   data:
     redis:
       host: localhost
-      port: 6380
+      port: 6379
       repositories:
         enabled: false
 
