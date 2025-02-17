@@ -39,7 +39,9 @@ GitHub 리포지토리 주소 : https://github.com/dahoon7151/QPBE-Library-Task
 - **JWT 기반 인증 적용**
 - **캐싱 적용 (Redis)**
 - **CI/CD 자동화 구축**
-- **모니터링 시스템 추가 (Prometheus, Grafana)**
+
+
+- **모니터링 시스템 추가 (Prometheus, Grafana)** (미적용)
 
 ---
 
