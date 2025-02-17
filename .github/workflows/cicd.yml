@@ -88,22 +88,12 @@ jobs:
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/qpbe-app:latest
           docker compose up -d
 
-      - name: 로컬 Health Check
-        run: |
-          echo "Waiting for application to be ready..."
-          for i in {1..10}; do
-            if curl -s http://localhost:8080/actuator/health | grep -q '"status":"UP"'; then
-              echo "Application is UP!"
-              exit 0
-            fi
-            echo "Application is not ready yet. Retrying in 5 seconds..."
-            sleep 5
-          done
-          echo "Application failed to start within expected time."
-          exit 1
+      - name: Wait for Application to be ready
+        run: sleep 30  # Spring Boot가 완전히 실행될 시간을 확보
 
-#        uses: jtalk/url-health-check-action@v3
-#        with:
-#          url: http://localhost:8080/actuator/health
-#          max-attempts: 3
-#          retry-delay: 1s
+      - name: 로컬 Health Check
+        uses: jtalk/url-health-check-action@v3
+        with:
+          url: http://localhost:8080/actuator/health
+          max-attempts: 3
+          retry-delay: 1s
