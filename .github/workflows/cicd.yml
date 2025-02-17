@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
           cache: gradle
-
+          
       - name: MySQL 실행
         uses: samin/mysql-action@v1
         with:
