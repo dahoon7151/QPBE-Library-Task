@@ -89,8 +89,21 @@ jobs:
           docker compose up -d
 
       - name: 로컬 Health Check
-        uses: jtalk/url-health-check-action@v3
-        with:
-          url: http://localhost:8080/actuator/health
-          max-attempts: 3
-          retry-delay: 1s
+        run: |
+          echo "Waiting for application to be ready..."
+          for i in {1..10}; do
+            if curl -s http://localhost:8080/actuator/health | grep -q '"status":"UP"'; then
+              echo "Application is UP!"
+              exit 0
+            fi
+            echo "Application is not ready yet. Retrying in 5 seconds..."
+            sleep 5
+          done
+          echo "Application failed to start within expected time."
+          exit 1
+
+#        uses: jtalk/url-health-check-action@v3
+#        with:
+#          url: http://localhost:8080/actuator/health
+#          max-attempts: 3
+#          retry-delay: 1s
