@@ -86,16 +86,16 @@ jobs:
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/qpbe-app:latest .
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/qpbe-app:latest
 
-      - name: Create SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/id_rsa
+#      - name: Create SSH Key
+#        run: |
+#          mkdir -p ~/.ssh
+#          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+#          chmod 600 ~/.ssh/id_rsa
+#          eval "$(ssh-agent -s)"
+#          ssh-add ~/.ssh/id_rsa
 
       - name: Pull 이후 로컬 서버 배포
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@0.1.4
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
