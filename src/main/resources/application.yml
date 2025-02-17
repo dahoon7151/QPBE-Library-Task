@@ -1,5 +1,0 @@
-spring:
-  application:
-    name: qpbetask
-  profiles:
-    default: dev
