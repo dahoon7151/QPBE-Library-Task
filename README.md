@@ -140,8 +140,10 @@ docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATAB
 
 ✅ **DevOps & Infra**
 - Docker  
-- GitHub Actions (CI/CD)  
-- Prometheus & Grafana (모니터링)  
+- GitHub Actions (CI/CD)
+
+  
+- Prometheus & Grafana (모니터링)  (미적용)
 
 ---
 
