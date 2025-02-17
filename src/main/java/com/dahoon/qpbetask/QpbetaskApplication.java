@@ -11,5 +11,4 @@ public class QpbetaskApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(QpbetaskApplication.class, args);
 	}
-
 }
