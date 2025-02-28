@@ -2,9 +2,21 @@
 # 📚 온라인 도서 관리 시스템
 
 이 프로젝트는 **온라인 도서 대출 및 관리 시스템**으로, **Spring Boot 기반의 REST API**를 제공합니다.  
-JWT 기반 인증, 도서 관리, 대출 기능을 포함하며, **Swagger API 문서, 캐싱, CI/CD, 모니터링**이 적용되었습니다.
+JWT 기반 인증, 도서 관리, 대출 기능을 포함하며, **Swagger API 문서, 캐싱, CI/CD**가 적용되었습니다.
 
 GitHub 리포지토리 주소 : https://github.com/dahoon7151/QPBE-Library-Task
+
+---
+
+## 🛠 사용한 기술 스택
+### **Backend**
+- Spring Boot, Java, JPA, Spring Security
+### **Database**
+- MySQL, Redis
+### **Server / Deployment**
+- Docker, Docker-Compose, Github Actions, WSL2(Local)
+### **Collaboration & Tools**
+- Git/GitHub, Notion, IntelliJ, Apache Jmeter
 
 ---
 
