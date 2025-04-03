@@ -154,7 +154,12 @@ GitHub 리포지토리 주소 : https://github.com/dahoon7151/QPBE-Library-Task
 ### **태그별 도서 필터링 최적화 문제**
 
 - **문제:** 태그별 도서 필터링 시 JPA 쿼리 성능 저하 발생
-- **해결:** 다중 조건을 처리하기 위해 `JOIN` 및 `WHERE EXISTS`를 활용하여 쿼리 최적화
+- **해결:** `JOIN`과 `GROUP BY + HAVING COUNT(DISTINCT)`를 조합하여 **지정된 태그를 모두 포함하는 도서만 필터링**하도록 쿼리 개선
+
+### 대출 정보 조회 N+1 문제
+
+- **문제:** 대출 정보 조회 시 연관된 도서 정보를 함께 사용할 때 **N+1 문제** 발생
+- **해결:** `JOIN FETCH`를 통해 연관 엔티티인 `Book`을 **즉시로딩**하여, 불필요한 추가 쿼리 발생을 방지
 
 ### **GenericJackson2JsonRedisSerializer 와 RedisSerializer 커스텀**
 
@@ -163,8 +168,8 @@ GitHub 리포지토리 주소 : https://github.com/dahoon7151/QPBE-Library-Task
 
 ### **GitHub Actions에서의 통합 테스트 문제**
 
-- **문제:** GitHub Actions에서 MySQL, Redis 컨테이너 설치 후 포트 할당 문제 발생
-- **해결:** GitHub Actions에서 `services` 설정을 활용하여 MySQL과 Redis 컨테이너를 올바르게 실행하도록 구성
+- **문제:** CI 과정에서 통합 테스트를 수행하기 위해 Redis, MySQL 컨테이너 실행 필요
+- **해결:** GitHub Actions의 `services` 설정을 활용해 테스트 전에 DB 컨테이너가 안정적으로 실행하도록 구성
 
 ---
 
