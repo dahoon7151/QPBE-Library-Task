@@ -25,26 +25,11 @@ GitHub 리포지토리 주소 : https://github.com/dahoon7151/QPBE-Library-Task
 
 ## 🛠 사용한 기술 스택
 
-### **Backend**
-
-- Spring Boot, JPA, Spring Security, Java
-
-### **Database**
-
-- MySQL, Redis
-
-### **Server / Deployment**
-
-- GitHub Actions, Docker
-
-### **Collaboration**
-
-- Git/GitHub, Notion, Swagger
-
-### **Tools**
-
-- IntelliJ, Apache JMeter
-
+- `Spring Boot`, `JPA`, `Java`
+- `MySQL`, `Redis`
+- `GitHub Actions`, `Docker`
+- `Git/GitHub`, `Swagger`
+- `Apache JMeter`
 ---
 
 ## 📌 초기 기획 및 설계
