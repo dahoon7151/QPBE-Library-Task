@@ -129,35 +129,6 @@ GitHub 리포지토리 주소 : https://github.com/dahoon7151/QPBE-Library-Task
 
 ---
 
-## 🛠 이슈 및 트러블슈팅
-
-### **Redis Pub/Sub을 활용한 캐시 일관성 유지**
-
-- **문제:** 다중 인스턴스 환경에서 캐시 일관성 유지 문제 발생
-- **해결:** Redis Pub/Sub을 활용하여 데이터 변경 시 캐시 무효화 및 최신 데이터 반영
-
-### **태그별 도서 필터링 최적화 문제**
-
-- **문제:** 태그별 도서 필터링 시 JPA 쿼리 성능 저하 발생
-- **해결:** `JOIN`과 `GROUP BY + HAVING COUNT(DISTINCT)`를 조합하여 **지정된 태그를 모두 포함하는 도서만 필터링**하도록 쿼리 개선
-
-### 대출 정보 조회 N+1 문제
-
-- **문제:** 대출 정보 조회 시 연관된 도서 정보를 함께 사용할 때 **N+1 문제** 발생
-- **해결:** `JOIN FETCH`를 통해 연관 엔티티인 `Book`을 **즉시로딩**하여, 불필요한 추가 쿼리 발생을 방지
-
-### **GenericJackson2JsonRedisSerializer 와 RedisSerializer 커스텀**
-
-- **문제:** Redis 캐시 직렬화 시 `GenericJackson2JsonRedisSerializer`로 인해 데이터 불일치 발생
-- **해결:** `RedisSerializer`를 커스텀하여 객체 변환 방식 개선 및 데이터 정합성 유지
-
-### **GitHub Actions에서의 통합 테스트 문제**
-
-- **문제:** CI 과정에서 통합 테스트를 수행하기 위해 Redis, MySQL 컨테이너 실행 필요
-- **해결:** GitHub Actions의 `services` 설정을 활용해 테스트 전에 DB 컨테이너가 안정적으로 실행하도록 구성
-
----
-
 ## 🎯 후기
 
 이번 프로젝트를 통해 **백엔드 개발뿐만 아니라 성능 최적화, 캐싱 전략, CI/CD 구축 등 다양한 경험을 쌓을 수 있었습니다.**
